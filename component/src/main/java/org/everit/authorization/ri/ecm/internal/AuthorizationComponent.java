@@ -61,8 +61,7 @@ import aQute.bnd.annotation.headers.ProvideCapability;
         label = "Service Description",
         description = "The description of this component configuration. It is used to easily "
             + "identify the service registered by this component.") })
-@ManualService(
-    value = { AuthorizationManager.class, PermissionChecker.class, AuthorizationQdslUtil.class })
+@ManualService({ AuthorizationManager.class, PermissionChecker.class, AuthorizationQdslUtil.class })
 public class AuthorizationComponent {
 
   private ConcurrentMap<String, Boolean> permissionCache;
