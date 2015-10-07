@@ -36,7 +36,7 @@
   <description>ECM based component of Authorization</description>
 
   <properties>
-    <projectpath>authorization-ri</projectpath>
+    <projectpath>authorization-ri-ecm</projectpath>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
@@ -100,7 +100,7 @@
     <dependency>
       <groupId>org.everit.authorization</groupId>
       <artifactId>org.everit.authorization.ri</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>

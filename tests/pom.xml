@@ -24,9 +24,10 @@
   <parent>
     <groupId>org.everit.authorization</groupId>
     <artifactId>org.everit.authorization.ri.ecm.parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
   </parent>
 
+  <groupId>org.everit.authorization</groupId>
   <artifactId>org.everit.authorization.ri.ecm.tests</artifactId>
   <version>1.0.0-SNAPSHOT</version>
 
@@ -34,7 +35,7 @@
   <name>Everit - Authorization Tests</name>
 
   <properties>
-    <projectpath>authorization-ri</projectpath>
+    <projectpath>authorization-ri-ecm</projectpath>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <source.dist.folder>${basedir}/src/dist/local/</source.dist.folder>
@@ -113,34 +114,30 @@
     <dependency>
       <groupId>org.everit.authorization</groupId>
       <artifactId>org.everit.authorization.ri.ecm</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.everit.cache</groupId>
-      <artifactId>org.everit.cache.noop</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <artifactId>org.everit.cache.noop.ecm</artifactId>
+      <version>1.0.0</version>
     </dependency>
-
     <dependency>
       <groupId>org.everit.cache</groupId>
       <artifactId>org.everit.cache.lru.ecm</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0</version>
     </dependency>
-
     <dependency>
       <groupId>org.everit.props</groupId>
       <artifactId>org.everit.props.ri.ecm</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0</version>
     </dependency>
-
     <dependency>
       <groupId>org.everit.resource</groupId>
       <artifactId>org.everit.resource.ri.ecm</artifactId>
       <version>1.0.0</version>
     </dependency>
     
-    <!-- Basic OSGi to tests -->
     <dependency>
       <groupId>org.everit.osgi.dev</groupId>
       <artifactId>org.everit.osgi.dev.testrunner.junit4</artifactId>
