@@ -40,10 +40,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.osgi.service.log.LogService;
 
-import com.mysema.query.sql.RelationalPathBase;
-import com.mysema.query.sql.SQLQuery;
-import com.mysema.query.sql.dml.SQLDeleteClause;
-import com.mysema.query.types.expr.BooleanExpression;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.sql.RelationalPathBase;
+import com.querydsl.sql.SQLQuery;
+import com.querydsl.sql.dml.SQLDeleteClause;
 
 import aQute.bnd.annotation.headers.ProvideCapability;
 
@@ -57,8 +57,7 @@ import aQute.bnd.annotation.headers.ProvideCapability;
     @StringAttribute(attributeId = TestRunnerConstants.SERVICE_PROPERTY_TESTRUNNER_ENGINE_TYPE,
         defaultValue = "junit4"),
     @StringAttribute(attributeId = TestRunnerConstants.SERVICE_PROPERTY_TEST_ID,
-        defaultValue = "AuthorizationBasicTest"),
-})
+        defaultValue = "AuthorizationBasicTest") })
 @Service(value = AuthorizationTest.class)
 public class AuthorizationTest {
 
@@ -217,14 +216,16 @@ public class AuthorizationTest {
 
   private long[] resolveTargetResourcesWithPermission(final long a1, final String action1) {
     return querydslSupport.execute((connection, configuration) -> {
-      SQLQuery query = new SQLQuery(connection, configuration);
       QResource targetResource = new QResource("tr");
 
       BooleanExpression permissionCheck = authorizationQdslUtil.authorizationPredicate(a1,
           targetResource.resourceId, action1);
 
-      List<Long> list = query.from(targetResource).where(permissionCheck)
-          .list(targetResource.resourceId);
+      List<Long> list = new SQLQuery<Long>(connection, configuration)
+          .select(targetResource.resourceId)
+          .from(targetResource)
+          .where(permissionCheck)
+          .fetch();
 
       return AuthorizationTest.convert(list);
     });
@@ -232,14 +233,16 @@ public class AuthorizationTest {
 
   private long[] resolveTargetResourcesWithPermission(final long a1, final String[] actions) {
     return querydslSupport.execute((connection, configuration) -> {
-      SQLQuery query = new SQLQuery(connection, configuration);
       QResource targetResource = new QResource("tr");
 
       BooleanExpression permissionCheckBooleanExpression = authorizationQdslUtil
           .authorizationPredicate(a1, targetResource.resourceId, actions);
 
-      List<Long> list = query.from(targetResource).where(permissionCheckBooleanExpression)
-          .list(targetResource.resourceId);
+      List<Long> list = new SQLQuery<Long>(connection, configuration)
+          .select(targetResource.resourceId)
+          .from(targetResource)
+          .where(permissionCheckBooleanExpression)
+          .fetch();
 
       return AuthorizationTest.convert(list);
     });
