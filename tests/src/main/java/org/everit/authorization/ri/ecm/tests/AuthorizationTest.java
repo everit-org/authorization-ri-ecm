@@ -32,7 +32,7 @@ import org.everit.osgi.ecm.annotation.Service;
 import org.everit.osgi.ecm.annotation.ServiceRef;
 import org.everit.osgi.ecm.annotation.attribute.StringAttribute;
 import org.everit.osgi.ecm.annotation.attribute.StringAttributes;
-import org.everit.osgi.ecm.extender.ECMExtenderConstants;
+import org.everit.osgi.ecm.extender.ExtendComponent;
 import org.everit.persistence.querydsl.support.QuerydslSupport;
 import org.everit.resource.ResourceService;
 import org.everit.resource.ri.schema.qdsl.QResource;
@@ -45,14 +45,11 @@ import com.querydsl.sql.RelationalPathBase;
 import com.querydsl.sql.SQLQuery;
 import com.querydsl.sql.dml.SQLDeleteClause;
 
-import aQute.bnd.annotation.headers.ProvideCapability;
-
 /**
  * Testing the basic functionality of authorization.
  */
+@ExtendComponent
 @Component(configurationPolicy = ConfigurationPolicy.FACTORY)
-@ProvideCapability(ns = ECMExtenderConstants.CAPABILITY_NS_COMPONENT,
-    value = ECMExtenderConstants.CAPABILITY_ATTR_CLASS + "=${@class}")
 @StringAttributes({
     @StringAttribute(attributeId = TestRunnerConstants.SERVICE_PROPERTY_TESTRUNNER_ENGINE_TYPE,
         defaultValue = "junit4"),
@@ -132,16 +129,16 @@ public class AuthorizationTest {
   private ResourceService resourceService;
 
   private void clearResourceTable() {
-    querydslSupport.execute((connection, configuration) -> {
+    this.querydslSupport.execute((connection, configuration) -> {
       QResource resource = QResource.resource;
       new SQLDeleteClause(connection, configuration, resource).where(
-          resource.resourceId.ne(permissionChecker.getSystemResourceId())).execute();
+          resource.resourceId.ne(this.permissionChecker.getSystemResourceId())).execute();
       return null;
     });
   }
 
   private void clearTable(final RelationalPathBase<?> path) {
-    querydslSupport.execute((connection, configuration) -> {
+    this.querydslSupport.execute((connection, configuration) -> {
       new SQLDeleteClause(connection, configuration, path).execute();
       return null;
     });
@@ -149,76 +146,76 @@ public class AuthorizationTest {
 
   private PermissionManipulationDTO createPermissionManipulationDTO() {
     PermissionManipulationDTO permissionManipulationDTO = new PermissionManipulationDTO();
-    permissionManipulationDTO.a1 = resourceService.createResource();
-    permissionManipulationDTO.a2 = resourceService.createResource();
-    permissionManipulationDTO.a3 = resourceService.createResource();
-    permissionManipulationDTO.a4 = resourceService.createResource();
-    permissionManipulationDTO.a5 = resourceService.createResource();
-    permissionManipulationDTO.a6 = resourceService.createResource();
-    permissionManipulationDTO.a7 = resourceService.createResource();
-    permissionManipulationDTO.a8 = resourceService.createResource();
+    permissionManipulationDTO.a1 = this.resourceService.createResource();
+    permissionManipulationDTO.a2 = this.resourceService.createResource();
+    permissionManipulationDTO.a3 = this.resourceService.createResource();
+    permissionManipulationDTO.a4 = this.resourceService.createResource();
+    permissionManipulationDTO.a5 = this.resourceService.createResource();
+    permissionManipulationDTO.a6 = this.resourceService.createResource();
+    permissionManipulationDTO.a7 = this.resourceService.createResource();
+    permissionManipulationDTO.a8 = this.resourceService.createResource();
 
-    permissionManipulationDTO.t1 = resourceService.createResource();
-    permissionManipulationDTO.t2 = resourceService.createResource();
-    permissionManipulationDTO.t3 = resourceService.createResource();
-    permissionManipulationDTO.t4 = resourceService.createResource();
-    permissionManipulationDTO.t5 = resourceService.createResource();
-    permissionManipulationDTO.t6 = resourceService.createResource();
-    permissionManipulationDTO.t7 = resourceService.createResource();
-    permissionManipulationDTO.t8 = resourceService.createResource();
+    permissionManipulationDTO.t1 = this.resourceService.createResource();
+    permissionManipulationDTO.t2 = this.resourceService.createResource();
+    permissionManipulationDTO.t3 = this.resourceService.createResource();
+    permissionManipulationDTO.t4 = this.resourceService.createResource();
+    permissionManipulationDTO.t5 = this.resourceService.createResource();
+    permissionManipulationDTO.t6 = this.resourceService.createResource();
+    permissionManipulationDTO.t7 = this.resourceService.createResource();
+    permissionManipulationDTO.t8 = this.resourceService.createResource();
     return permissionManipulationDTO;
   }
 
   private void extracted(final PermissionManipulationDTO permissionManipulation,
       final String action) {
-    authorizationManager.addPermission(permissionManipulation.a1, permissionManipulation.t1,
+    this.authorizationManager.addPermission(permissionManipulation.a1, permissionManipulation.t1,
         action);
-    authorizationManager.addPermission(permissionManipulation.a2, permissionManipulation.t2,
+    this.authorizationManager.addPermission(permissionManipulation.a2, permissionManipulation.t2,
         action);
-    authorizationManager.addPermission(permissionManipulation.a3, permissionManipulation.t3,
+    this.authorizationManager.addPermission(permissionManipulation.a3, permissionManipulation.t3,
         action);
-    authorizationManager.addPermission(permissionManipulation.a4, permissionManipulation.t4,
+    this.authorizationManager.addPermission(permissionManipulation.a4, permissionManipulation.t4,
         action);
-    authorizationManager.addPermission(permissionManipulation.a5, permissionManipulation.t5,
+    this.authorizationManager.addPermission(permissionManipulation.a5, permissionManipulation.t5,
         action);
-    authorizationManager.addPermission(permissionManipulation.a6, permissionManipulation.t6,
+    this.authorizationManager.addPermission(permissionManipulation.a6, permissionManipulation.t6,
         action);
-    authorizationManager.addPermission(permissionManipulation.a7, permissionManipulation.t7,
+    this.authorizationManager.addPermission(permissionManipulation.a7, permissionManipulation.t7,
         action);
-    authorizationManager.addPermission(permissionManipulation.a8, permissionManipulation.t8,
+    this.authorizationManager.addPermission(permissionManipulation.a8, permissionManipulation.t8,
         action);
 
-    authorizationManager.addPermissionInheritance(permissionManipulation.a1,
+    this.authorizationManager.addPermissionInheritance(permissionManipulation.a1,
         permissionManipulation.a3);
-    authorizationManager.addPermissionInheritance(permissionManipulation.a1,
+    this.authorizationManager.addPermissionInheritance(permissionManipulation.a1,
         permissionManipulation.a4);
-    authorizationManager.addPermissionInheritance(permissionManipulation.a2,
+    this.authorizationManager.addPermissionInheritance(permissionManipulation.a2,
         permissionManipulation.a4);
-    authorizationManager.addPermissionInheritance(permissionManipulation.a2,
+    this.authorizationManager.addPermissionInheritance(permissionManipulation.a2,
         permissionManipulation.a5);
-    authorizationManager.addPermissionInheritance(permissionManipulation.a3,
+    this.authorizationManager.addPermissionInheritance(permissionManipulation.a3,
         permissionManipulation.a6);
-    authorizationManager.addPermissionInheritance(permissionManipulation.a4,
+    this.authorizationManager.addPermissionInheritance(permissionManipulation.a4,
         permissionManipulation.a6);
-    authorizationManager.addPermissionInheritance(permissionManipulation.a4,
+    this.authorizationManager.addPermissionInheritance(permissionManipulation.a4,
         permissionManipulation.a7);
-    authorizationManager.addPermissionInheritance(permissionManipulation.a5,
+    this.authorizationManager.addPermissionInheritance(permissionManipulation.a5,
         permissionManipulation.a7);
-    authorizationManager.addPermissionInheritance(permissionManipulation.a6,
+    this.authorizationManager.addPermissionInheritance(permissionManipulation.a6,
         permissionManipulation.a8);
-    authorizationManager.addPermissionInheritance(permissionManipulation.a7,
+    this.authorizationManager.addPermissionInheritance(permissionManipulation.a7,
         permissionManipulation.a8);
   }
 
   public LogService getLogService() {
-    return logService;
+    return this.logService;
   }
 
   private long[] resolveTargetResourcesWithPermission(final long a1, final String action1) {
-    return querydslSupport.execute((connection, configuration) -> {
+    return this.querydslSupport.execute((connection, configuration) -> {
       QResource targetResource = new QResource("tr");
 
-      BooleanExpression permissionCheck = authorizationQdslUtil.authorizationPredicate(a1,
+      BooleanExpression permissionCheck = this.authorizationQdslUtil.authorizationPredicate(a1,
           targetResource.resourceId, action1);
 
       List<Long> list = new SQLQuery<Long>(connection, configuration)
@@ -232,10 +229,10 @@ public class AuthorizationTest {
   }
 
   private long[] resolveTargetResourcesWithPermission(final long a1, final String[] actions) {
-    return querydslSupport.execute((connection, configuration) -> {
+    return this.querydslSupport.execute((connection, configuration) -> {
       QResource targetResource = new QResource("tr");
 
-      BooleanExpression permissionCheckBooleanExpression = authorizationQdslUtil
+      BooleanExpression permissionCheckBooleanExpression = this.authorizationQdslUtil
           .authorizationPredicate(a1, targetResource.resourceId, actions);
 
       List<Long> list = new SQLQuery<Long>(connection, configuration)
@@ -260,7 +257,7 @@ public class AuthorizationTest {
 
   @ServiceRef(defaultValue = "")
   public void setLogService(final LogService log) {
-    logService = log;
+    this.logService = log;
   }
 
   @ServiceRef(defaultValue = "")
@@ -270,7 +267,7 @@ public class AuthorizationTest {
 
   @ServiceRef(defaultValue = "")
   public void setQuerydslSupport(final QuerydslSupport qdsl) {
-    querydslSupport = qdsl;
+    this.querydslSupport = qdsl;
   }
 
   @ServiceRef(defaultValue = "")
@@ -326,9 +323,9 @@ public class AuthorizationTest {
 
   @Test(expected = RuntimeException.class)
   public void testAddPermisisonInheritanceInvalidChildResource() {
-    long resourceId = resourceService.createResource();
+    long resourceId = this.resourceService.createResource();
     try {
-      authorizationManager.addPermissionInheritance(INVALID_RESOURCE_ID, resourceId);
+      this.authorizationManager.addPermissionInheritance(INVALID_RESOURCE_ID, resourceId);
     } finally {
       clearResourceTable();
     }
@@ -336,9 +333,9 @@ public class AuthorizationTest {
 
   @Test(expected = RuntimeException.class)
   public void testAddPermisisonInheritanceInvalidParentResource() {
-    long resourceId = resourceService.createResource();
+    long resourceId = this.resourceService.createResource();
     try {
-      authorizationManager.addPermissionInheritance(INVALID_RESOURCE_ID, resourceId);
+      this.authorizationManager.addPermissionInheritance(INVALID_RESOURCE_ID, resourceId);
     } finally {
       clearResourceTable();
     }
@@ -346,9 +343,9 @@ public class AuthorizationTest {
 
   @Test(expected = RuntimeException.class)
   public void testAddPermissionInvalidAuthorizedResourceId() {
-    long resourceId = resourceService.createResource();
+    long resourceId = this.resourceService.createResource();
     try {
-      authorizationManager.addPermission(INVALID_RESOURCE_ID, resourceId, "");
+      this.authorizationManager.addPermission(INVALID_RESOURCE_ID, resourceId, "");
     } finally {
       clearResourceTable();
     }
@@ -356,9 +353,9 @@ public class AuthorizationTest {
 
   @Test(expected = RuntimeException.class)
   public void testAddPermissionInvalidTargetResourceId() {
-    long resourceId = resourceService.createResource();
+    long resourceId = this.resourceService.createResource();
     try {
-      authorizationManager.addPermission(resourceId, INVALID_RESOURCE_ID, "");
+      this.authorizationManager.addPermission(resourceId, INVALID_RESOURCE_ID, "");
     } finally {
       clearResourceTable();
     }
@@ -366,26 +363,26 @@ public class AuthorizationTest {
 
   @Test(expected = NullPointerException.class)
   public void testAddPermissionNullAction() {
-    authorizationManager.addPermission(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID, null);
+    this.authorizationManager.addPermission(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID, null);
   }
 
   @Test
   public void testCyclicPermissionInheritance() {
-    long a1 = resourceService.createResource();
-    long a2 = resourceService.createResource();
-    long a3 = resourceService.createResource();
+    long a1 = this.resourceService.createResource();
+    long a2 = this.resourceService.createResource();
+    long a3 = this.resourceService.createResource();
 
-    authorizationManager.addPermissionInheritance(a1, a2);
-    authorizationManager.addPermissionInheritance(a2, a1);
-    authorizationManager.addPermissionInheritance(a1, a3);
-    authorizationManager.addPermissionInheritance(a2, a3);
+    this.authorizationManager.addPermissionInheritance(a1, a2);
+    this.authorizationManager.addPermissionInheritance(a2, a1);
+    this.authorizationManager.addPermissionInheritance(a1, a3);
+    this.authorizationManager.addPermissionInheritance(a2, a3);
 
     Assert.assertArrayEquals(AuthorizationTest.sort(new long[] { a1, a2, a3 }),
-        AuthorizationTest.sort(permissionChecker.getAuthorizationScope(a3)));
+        AuthorizationTest.sort(this.permissionChecker.getAuthorizationScope(a3)));
     Assert.assertArrayEquals(AuthorizationTest.sort(new long[] { a1, a2 }),
-        AuthorizationTest.sort(permissionChecker.getAuthorizationScope(a1)));
+        AuthorizationTest.sort(this.permissionChecker.getAuthorizationScope(a1)));
 
-    authorizationManager.clearCache();
+    this.authorizationManager.clearCache();
     clearTable(QPermission.permission);
     clearTable(QPermissionInheritance.permissionInheritance);
     clearResourceTable();
@@ -393,28 +390,28 @@ public class AuthorizationTest {
 
   @Test
   public void testPermissionCheckInvalidResource() {
-    long resourceId = resourceService.createResource();
+    long resourceId = this.resourceService.createResource();
 
-    Assert.assertFalse(permissionChecker.hasPermission(INVALID_RESOURCE_ID, resourceId, ""));
+    Assert.assertFalse(this.permissionChecker.hasPermission(INVALID_RESOURCE_ID, resourceId, ""));
 
-    Assert.assertFalse(permissionChecker.hasPermission(resourceId, INVALID_RESOURCE_ID, ""));
+    Assert.assertFalse(this.permissionChecker.hasPermission(resourceId, INVALID_RESOURCE_ID, ""));
 
     clearResourceTable();
   }
 
   @Test(expected = NullPointerException.class)
   public void testPermissionCheckNullAction() {
-    permissionChecker.hasPermission(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID, (String[]) null);
+    this.permissionChecker.hasPermission(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID, (String[]) null);
   }
 
   @Test(expected = NullPointerException.class)
   public void testPermissionCheckNullActionInArray() {
-    permissionChecker.hasPermission(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID, (String) null);
+    this.permissionChecker.hasPermission(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID, (String) null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testPermissionCheckZeroAction() {
-    permissionChecker.hasPermission(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID);
+    this.permissionChecker.hasPermission(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID);
   }
 
   @Test
@@ -429,48 +426,48 @@ public class AuthorizationTest {
         permissionManipulationDTO.a2, permissionManipulationDTO.a3, permissionManipulationDTO.a6,
         permissionManipulationDTO.a4 }),
         AuthorizationTest
-            .sort(permissionChecker.getAuthorizationScope(permissionManipulationDTO.a6)));
+            .sort(this.permissionChecker.getAuthorizationScope(permissionManipulationDTO.a6)));
 
-    Assert.assertFalse(permissionChecker.hasPermission(permissionManipulationDTO.a1,
+    Assert.assertFalse(this.permissionChecker.hasPermission(permissionManipulationDTO.a1,
         permissionManipulationDTO.t1, "x"));
-    Assert.assertTrue(permissionChecker.hasPermission(permissionManipulationDTO.a1,
+    Assert.assertTrue(this.permissionChecker.hasPermission(permissionManipulationDTO.a1,
         permissionManipulationDTO.t1, action1));
-    Assert.assertTrue(permissionChecker.hasPermission(permissionManipulationDTO.a8,
+    Assert.assertTrue(this.permissionChecker.hasPermission(permissionManipulationDTO.a8,
         permissionManipulationDTO.t1, action1));
-    Assert.assertFalse(permissionChecker.hasPermission(permissionManipulationDTO.a1,
+    Assert.assertFalse(this.permissionChecker.hasPermission(permissionManipulationDTO.a1,
         permissionManipulationDTO.t8, action1));
-    Assert.assertTrue(permissionChecker.hasPermission(permissionManipulationDTO.a8,
+    Assert.assertTrue(this.permissionChecker.hasPermission(permissionManipulationDTO.a8,
         permissionManipulationDTO.t4, action1));
 
-    authorizationManager.removePermissionInheritance(permissionManipulationDTO.a4,
+    this.authorizationManager.removePermissionInheritance(permissionManipulationDTO.a4,
         permissionManipulationDTO.a7);
 
-    Assert.assertTrue(permissionChecker.hasPermission(permissionManipulationDTO.a8,
+    Assert.assertTrue(this.permissionChecker.hasPermission(permissionManipulationDTO.a8,
         permissionManipulationDTO.t4, action1));
 
-    authorizationManager.removePermissionInheritance(permissionManipulationDTO.a4,
+    this.authorizationManager.removePermissionInheritance(permissionManipulationDTO.a4,
         permissionManipulationDTO.a6);
 
-    Assert.assertFalse(permissionChecker.hasPermission(permissionManipulationDTO.a8,
+    Assert.assertFalse(this.permissionChecker.hasPermission(permissionManipulationDTO.a8,
         permissionManipulationDTO.t4, action1));
-    Assert.assertTrue(permissionChecker.hasPermission(permissionManipulationDTO.a8,
+    Assert.assertTrue(this.permissionChecker.hasPermission(permissionManipulationDTO.a8,
         permissionManipulationDTO.t2, action1));
     Assert.assertArrayEquals(AuthorizationTest.sort(new long[] { permissionManipulationDTO.a1,
         permissionManipulationDTO.a3, permissionManipulationDTO.a6 }),
         AuthorizationTest
-            .sort(permissionChecker.getAuthorizationScope(permissionManipulationDTO.a6)));
+            .sort(this.permissionChecker.getAuthorizationScope(permissionManipulationDTO.a6)));
 
-    authorizationManager.removePermissionInheritance(permissionManipulationDTO.a2,
+    this.authorizationManager.removePermissionInheritance(permissionManipulationDTO.a2,
         permissionManipulationDTO.a5);
 
-    Assert.assertFalse(permissionChecker.hasPermission(permissionManipulationDTO.a8,
+    Assert.assertFalse(this.permissionChecker.hasPermission(permissionManipulationDTO.a8,
         permissionManipulationDTO.t2, action1));
 
-    Assert.assertTrue(permissionChecker.hasPermission(permissionManipulationDTO.a8,
+    Assert.assertTrue(this.permissionChecker.hasPermission(permissionManipulationDTO.a8,
         permissionManipulationDTO.t1, action1));
-    authorizationManager.removePermission(permissionManipulationDTO.a1,
+    this.authorizationManager.removePermission(permissionManipulationDTO.a1,
         permissionManipulationDTO.t1, action1);
-    Assert.assertFalse(permissionChecker.hasPermission(permissionManipulationDTO.a8,
+    Assert.assertFalse(this.permissionChecker.hasPermission(permissionManipulationDTO.a8,
         permissionManipulationDTO.t1, action1));
 
     // Uncomment if you want some stress testing
@@ -482,14 +479,14 @@ public class AuthorizationTest {
     // permissionManipulationDTO.t6, permissionManipulationDTO.t7, permissionManipulationDTO.t8 },
     // action1);
 
-    authorizationManager.clearCache();
+    this.authorizationManager.clearCache();
 
-    Assert.assertFalse(permissionChecker.hasPermission(permissionManipulationDTO.a8,
+    Assert.assertFalse(this.permissionChecker.hasPermission(permissionManipulationDTO.a8,
         permissionManipulationDTO.t1, action1));
-    Assert.assertTrue(permissionChecker.hasPermission(permissionManipulationDTO.a8,
+    Assert.assertTrue(this.permissionChecker.hasPermission(permissionManipulationDTO.a8,
         permissionManipulationDTO.t8, action1));
 
-    authorizationManager.clearCache();
+    this.authorizationManager.clearCache();
     clearTable(QPermission.permission);
     clearTable(QPermissionInheritance.permissionInheritance);
     clearResourceTable();
@@ -497,26 +494,26 @@ public class AuthorizationTest {
 
   @Test
   public void testQueryExtension() {
-    long a1 = resourceService.createResource();
-    long a2 = resourceService.createResource();
-    long a3 = resourceService.createResource();
+    long a1 = this.resourceService.createResource();
+    long a2 = this.resourceService.createResource();
+    long a3 = this.resourceService.createResource();
 
-    long t1 = resourceService.createResource();
-    long t2 = resourceService.createResource();
-    long t3 = resourceService.createResource();
+    long t1 = this.resourceService.createResource();
+    long t2 = this.resourceService.createResource();
+    long t3 = this.resourceService.createResource();
 
     final String action1 = "action1";
     final String action2 = "action2";
     final String action3 = "action3";
     final String action4 = "action4";
 
-    authorizationManager.addPermission(a1, t1, action1);
-    authorizationManager.addPermission(a1, t1, action2);
-    authorizationManager.addPermission(a2, t2, action1);
-    authorizationManager.addPermission(a3, t3, action3);
+    this.authorizationManager.addPermission(a1, t1, action1);
+    this.authorizationManager.addPermission(a1, t1, action2);
+    this.authorizationManager.addPermission(a2, t2, action1);
+    this.authorizationManager.addPermission(a3, t3, action3);
 
-    authorizationManager.addPermissionInheritance(a1, a2);
-    authorizationManager.addPermissionInheritance(a1, a3);
+    this.authorizationManager.addPermissionInheritance(a1, a2);
+    this.authorizationManager.addPermissionInheritance(a1, a3);
 
     long[] resources = resolveTargetResourcesWithPermission(a1, action1);
     Assert.assertArrayEquals(new long[] { t1 }, resources);
@@ -536,31 +533,32 @@ public class AuthorizationTest {
     resources = resolveTargetResourcesWithPermission(a3, new String[] { action3, action2 });
     Assert.assertArrayEquals(new long[] { t1, t3 }, resources);
 
-    authorizationManager.clearCache();
+    this.authorizationManager.clearCache();
     clearTable(QPermission.permission);
     clearTable(QPermissionInheritance.permissionInheritance);
     clearResourceTable();
   }
 
   public void testRemovePermissionInheritanceInvalidResources() {
-    authorizationManager.removePermissionInheritance(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID);
+    this.authorizationManager.removePermissionInheritance(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID);
   }
 
   @Test(expected = NullPointerException.class)
   public void testRemovePermissionNullAction() {
-    authorizationManager.removePermission(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID, null);
+    this.authorizationManager.removePermission(INVALID_RESOURCE_ID, INVALID_RESOURCE_ID, null);
   }
 
   @Test
   public void testSystemResource() {
-    long systemResourceId = permissionChecker.getSystemResourceId();
-    Assert.assertTrue(permissionChecker.hasPermission(systemResourceId, INVALID_RESOURCE_ID, ""));
+    long systemResourceId = this.permissionChecker.getSystemResourceId();
+    Assert.assertTrue(
+        this.permissionChecker.hasPermission(systemResourceId, INVALID_RESOURCE_ID, ""));
 
-    long a1 = resourceService.createResource();
+    long a1 = this.resourceService.createResource();
 
-    authorizationManager.addPermissionInheritance(systemResourceId, a1);
+    this.authorizationManager.addPermissionInheritance(systemResourceId, a1);
 
-    Assert.assertTrue(permissionChecker.hasPermission(a1, INVALID_RESOURCE_ID, ""));
+    Assert.assertTrue(this.permissionChecker.hasPermission(a1, INVALID_RESOURCE_ID, ""));
 
     Assert.assertArrayEquals(AuthorizationTest.sort(new long[] { systemResourceId, a1 }),
         resolveTargetResourcesWithPermission(systemResourceId, ""));

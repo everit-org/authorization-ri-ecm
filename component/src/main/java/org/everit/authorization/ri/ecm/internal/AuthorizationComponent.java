@@ -29,11 +29,12 @@ import org.everit.osgi.ecm.annotation.Component;
 import org.everit.osgi.ecm.annotation.ConfigurationPolicy;
 import org.everit.osgi.ecm.annotation.Deactivate;
 import org.everit.osgi.ecm.annotation.ManualService;
+import org.everit.osgi.ecm.annotation.ManualServices;
 import org.everit.osgi.ecm.annotation.ServiceRef;
 import org.everit.osgi.ecm.annotation.attribute.StringAttribute;
 import org.everit.osgi.ecm.annotation.attribute.StringAttributes;
 import org.everit.osgi.ecm.component.ComponentContext;
-import org.everit.osgi.ecm.extender.ECMExtenderConstants;
+import org.everit.osgi.ecm.extender.ExtendComponent;
 import org.everit.persistence.querydsl.support.QuerydslSupport;
 import org.everit.props.PropertyManager;
 import org.everit.resource.ResourceService;
@@ -41,19 +42,16 @@ import org.everit.transaction.propagator.TransactionPropagator;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceRegistration;
 
-import aQute.bnd.annotation.headers.ProvideCapability;
-
 /**
  * ECM component for {@link AuthorizationManager}, {@link PermissionChecker} and
  * {@link AuthorizationQdslUtil} interface based on {@link AuthorizationImpl}.
  */
+@ExtendComponent
 @Component(componentId = AuthorizationConstants.SERVICE_FACTORYPID_AUTHORIZATION,
     configurationPolicy = ConfigurationPolicy.FACTORY, label = "Everit Authorization RI",
     description = "Component that registers a PermissionChecker, AuthorizationManager and "
         + "AuthorizationQdslUtil OSGi services. The component uses cache to speed up the results "
         + "that are provided by PermissionChecker.")
-@ProvideCapability(ns = ECMExtenderConstants.CAPABILITY_NS_COMPONENT,
-    value = ECMExtenderConstants.CAPABILITY_ATTR_CLASS + "=${@class}")
 @StringAttributes({
     @StringAttribute(attributeId = Constants.SERVICE_DESCRIPTION,
         defaultValue = AuthorizationConstants.DEFAULT_SERVICE_DESCRIPTION,
@@ -61,7 +59,8 @@ import aQute.bnd.annotation.headers.ProvideCapability;
         label = "Service Description",
         description = "The description of this component configuration. It is used to easily "
             + "identify the service registered by this component.") })
-@ManualService({ AuthorizationManager.class, PermissionChecker.class, AuthorizationQdslUtil.class })
+@ManualServices(@ManualService({
+    AuthorizationManager.class, PermissionChecker.class, AuthorizationQdslUtil.class }))
 public class AuthorizationComponent {
 
   private ConcurrentMap<String, Boolean> permissionCache;
@@ -83,12 +82,14 @@ public class AuthorizationComponent {
    */
   @Activate
   public void activate(final ComponentContext<AuthorizationComponent> componentContext) {
-    AuthorizationImpl authorizationImpl = new AuthorizationImpl(propertyManager, resourceService,
-        transactionPropagator, querydslSupport, permissionCache, permissionInheritanceCache);
+    AuthorizationImpl authorizationImpl =
+        new AuthorizationImpl(this.propertyManager, this.resourceService,
+            this.transactionPropagator, this.querydslSupport, this.permissionCache,
+            this.permissionInheritanceCache);
 
     Dictionary<String, Object> serviceProperties =
         new Hashtable<>(componentContext.getProperties());
-    serviceRegistration =
+    this.serviceRegistration =
         componentContext.registerService(new String[] { AuthorizationManager.class.getName(),
             PermissionChecker.class.getName(), AuthorizationQdslUtil.class.getName() },
             authorizationImpl,
@@ -100,8 +101,8 @@ public class AuthorizationComponent {
    */
   @Deactivate
   public void deactivate() {
-    if (serviceRegistration != null) {
-      serviceRegistration.unregister();
+    if (this.serviceRegistration != null) {
+      this.serviceRegistration.unregister();
     }
   }
 
